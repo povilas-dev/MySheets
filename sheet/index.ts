@@ -1,5 +1,5 @@
 import {resolveFormula} from '../formula';
-import {Cell, FormulaCell, Job, Sheet, ValueCell} from '../interfaces';
+import {Cell, Formula, FormulaCell, Job, Sheet, ValueCell} from '../interfaces';
 import {parseCellPosition} from '../utils';
 
 export function getCellAtPosition(cellPosition: string, sheet: Sheet) {
@@ -7,16 +7,21 @@ export function getCellAtPosition(cellPosition: string, sheet: Sheet) {
   return sheet[position.column][position.row] as Cell;
 }
 
-export function getValueCellAtPosition(cellPosition: string, sheet: Sheet) {
+export function getValueCellAtPosition(
+  cellPosition: string,
+  sheet: Sheet
+): ValueCell {
   const position = parseCellPosition(cellPosition);
   const cell = sheet[position.column][position.row];
   console.log('POSITION: ', position);
   console.log('CELL at ', cellPosition, ' : ', cell);
-  if ('value' in cell) return cell as ValueCell;
   if ('formula' in cell) {
     console.log('REFERENCE: ,', JSON.stringify(cell, null, 4));
-    return resolveFormula(cell as FormulaCell, sheet) as ValueCell;
+    const resultCell = resolveFormula(cell.formula as Formula, sheet);
+    updateCellAtPosition(cellPosition, resultCell, sheet);
+    return resultCell as ValueCell;
   }
+  return cell as ValueCell;
 }
 
 export function updateCellAtPosition(
