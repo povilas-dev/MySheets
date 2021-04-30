@@ -296,7 +296,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {boolean: true}});
       });
     });
-    describe.only('AND', () => {
+    describe('AND', () => {
       it('should resolve a AND formula with direct references', () => {
         const sheet = mockBooleanSheetBuilder().build();
         const formulaCell1 = {
@@ -345,6 +345,57 @@ describe('Sheet', () => {
         };
         const resultCell = resolveFormula(formulaCell.formula, sheet);
         expect(resultCell).toEqual({value: {boolean: false}});
+      });
+    });
+    describe.only('OR', () => {
+      it('should resolve a OR formula with direct references', () => {
+        const sheet = mockBooleanSheetBuilder().build();
+        const formulaCell1 = {
+          formula: {
+            or: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const formulaCell2 = {
+          formula: {
+            or: [
+              {
+                reference: 'B1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const resultCell1 = resolveFormula(formulaCell1.formula, sheet);
+        const resultCell2 = resolveFormula(formulaCell2.formula, sheet);
+        expect(resultCell1).toEqual({value: {boolean: true}});
+        expect(resultCell2).toEqual({value: {boolean: false}});
+      });
+      it('should resolve a OR formula with deep references', () => {
+        const sheet = mockBooleanSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            or: [
+              {
+                reference: 'A1',
+              },
+
+              {
+                reference: 'D1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {boolean: true}});
       });
     });
   });

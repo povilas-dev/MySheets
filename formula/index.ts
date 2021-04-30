@@ -69,7 +69,10 @@ export function resolveFormula(
       }
     }
     if (Operator.OR in formula) {
-      return {} as ValueCell;
+      if (formula.or !== undefined) {
+        acc = calculateOr(formula.or as ReferenceCell[], sheet);
+        return acc;
+      }
     }
     if (Operator.IF in formula) {
       return {} as ValueCell;
@@ -155,4 +158,11 @@ function calculateAnd(cells: ReferenceCell[], sheet: Sheet) {
     (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.boolean
   );
   return {value: {boolean: filteredCells.length === cells.length}} as ValueCell;
+}
+
+function calculateOr(cells: ReferenceCell[], sheet: Sheet) {
+  const result = cells.some(
+    (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.boolean
+  );
+  return {value: {boolean: result}} as ValueCell;
 }
