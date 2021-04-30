@@ -197,7 +197,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {number: 1.5625}});
       });
     });
-    describe.only('IS_GREATER', () => {
+    describe('IS_GREATER', () => {
       it('should resolve a IS_GREATER formula with direct references', () => {
         const sheet = mockSumSheetBuilder().build();
         const formulaCell = {
@@ -220,6 +220,56 @@ describe('Sheet', () => {
         const formulaCell = {
           formula: {
             is_greater: [
+              {
+                reference: 'C1',
+              },
+              {
+                reference: 'D1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {boolean: false}});
+      });
+    });
+    describe.only('IS_EQUAL', () => {
+      it('should resolve a IS_EQUAL formula with direct references', () => {
+        const sheet = mockSumSheetBuilder().build();
+        const formulaCell1 = {
+          formula: {
+            is_equal: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const formulaCell2 = {
+          formula: {
+            is_equal: [
+              {
+                reference: 'B1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const resultCell1 = resolveFormula(formulaCell1.formula, sheet);
+        expect(resultCell1).toEqual({value: {boolean: false}});
+        const resultCell2 = resolveFormula(formulaCell2.formula, sheet);
+        expect(resultCell2).toEqual({value: {boolean: true}});
+      });
+      it('should resolve a IS_EQUAL formula with deep references', () => {
+        const sheet = mockSumSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            is_equal: [
               {
                 reference: 'C1',
               },

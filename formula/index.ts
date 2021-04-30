@@ -51,7 +51,10 @@ export function resolveFormula(
       }
     }
     if (Operator.IS_EQUAL in formula) {
-      return {} as ValueCell;
+      if (formula.is_equal !== undefined) {
+        acc = calculateIsEqual(formula.is_equal as ReferenceCell[], sheet);
+        return acc;
+      }
     }
     if (Operator.NOT in formula) {
       return {} as ValueCell;
@@ -115,11 +118,23 @@ function calculateIsGreater(cells: ReferenceCell[], sheet: Sheet) {
   //return errors if length = 0
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
   const secondCell = getValueCellAtPosition(cells[1].reference, sheet);
+
+  const firstValue = firstCell.value.number as number;
+  const secondValue = secondCell.value.number as number;
+
+  const result = firstValue > secondValue;
+  return {value: {boolean: result}} as ValueCell;
+}
+
+function calculateIsEqual(cells: ReferenceCell[], sheet: Sheet) {
+  //return errors if length = 0
+  const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
+  const secondCell = getValueCellAtPosition(cells[1].reference, sheet);
   console.log('firstCell: ', JSON.stringify(firstCell, null, 4));
   console.log('secondCell: ', JSON.stringify(secondCell, null, 4));
 
   const firstValue = firstCell.value.number as number;
   const secondValue = secondCell.value.number as number;
-  const result = firstValue > secondValue;
+  const result = firstValue === secondValue;
   return {value: {boolean: result}} as ValueCell;
 }
