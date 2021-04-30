@@ -63,7 +63,10 @@ export function resolveFormula(
       }
     }
     if (Operator.AND in formula) {
-      return {} as ValueCell;
+      if (formula.and !== undefined) {
+        acc = calculateAnd(formula.and as ReferenceCell[], sheet);
+        return acc;
+      }
     }
     if (Operator.OR in formula) {
       return {} as ValueCell;
@@ -145,4 +148,11 @@ function calculateNegation(cell: ReferenceCell, sheet: Sheet) {
   const value = valueCell.value.boolean as boolean;
   const result = !value;
   return {value: {boolean: result}} as ValueCell;
+}
+
+function calculateAnd(cells: ReferenceCell[], sheet: Sheet) {
+  const filteredCells = cells.filter(
+    (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.boolean
+  );
+  return {value: {boolean: filteredCells.length === cells.length}} as ValueCell;
 }
