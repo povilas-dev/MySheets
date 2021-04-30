@@ -45,7 +45,10 @@ export function resolveFormula(
       }
     }
     if (Operator.IS_GREATER in formula) {
-      return {} as ValueCell;
+      if (formula.is_greater !== undefined) {
+        acc = calculateIsGreater(formula.is_greater as ReferenceCell[], sheet);
+        return acc;
+      }
     }
     if (Operator.IS_EQUAL in formula) {
       return {} as ValueCell;
@@ -106,4 +109,17 @@ function calculateDivide(cells: ReferenceCell[], sheet: Sheet) {
     }
   });
   return {value: {number: result}} as ValueCell;
+}
+
+function calculateIsGreater(cells: ReferenceCell[], sheet: Sheet) {
+  //return errors if length = 0
+  const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
+  const secondCell = getValueCellAtPosition(cells[1].reference, sheet);
+  console.log('firstCell: ', JSON.stringify(firstCell, null, 4));
+  console.log('secondCell: ', JSON.stringify(secondCell, null, 4));
+
+  const firstValue = firstCell.value.number as number;
+  const secondValue = secondCell.value.number as number;
+  const result = firstValue > secondValue;
+  return {value: {boolean: result}} as ValueCell;
 }

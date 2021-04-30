@@ -161,7 +161,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {number: 221184}});
       });
     });
-    describe.only('DIVIDE', () => {
+    describe('DIVIDE', () => {
       it('should resolve a DIVIDE formula with direct references', () => {
         const sheet = mockDivideSheetBuilder().build();
         const formulaCell = {
@@ -195,6 +195,42 @@ describe('Sheet', () => {
         };
         const resultCell = resolveFormula(formulaCell.formula, sheet);
         expect(resultCell).toEqual({value: {number: 1.5625}});
+      });
+    });
+    describe.only('IS_GREATER', () => {
+      it('should resolve a IS_GREATER formula with direct references', () => {
+        const sheet = mockSumSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            is_greater: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {boolean: true}});
+      });
+      it('should resolve a IS_GREATER formula with deep references', () => {
+        const sheet = mockSumSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            is_greater: [
+              {
+                reference: 'C1',
+              },
+              {
+                reference: 'D1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {boolean: false}});
       });
     });
   });
