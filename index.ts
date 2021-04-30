@@ -1,8 +1,7 @@
 import fetch from 'node-fetch';
-import {ColumnPosition} from './enums';
+// import {ColumnPosition} from './enums';
 import {resolveFormula} from './formula';
 import {Job, JobsResponse} from './interfaces';
-import {mockJobs, mockResultSheet} from './mocks/mocks';
 import {findFormulas} from './sheet';
 const HUB_URL =
   'https://www.wix.com/_serverless/hiring-task-spreadsheet-evaluator';
@@ -31,12 +30,12 @@ getJobData().then((data: JobsResponse) => {
     console.log('Job sheet: ');
     console.log(JSON.stringify(sheet, null, 4));
     // console.log(findFormulas(job.data));
-    const jobFormulas = findFormulas(job.data);
-    jobFormulas.forEach((formulaCell) => {
-      console.log('Incoming formulaCell: ', formulaCell);
-      const resolved = resolveFormula(formulaCell.formula, sheet);
-      console.log('Resolved Cell: ', resolved);
-    });
+    // const jobFormulas = findFormulas(job.data);
+    // jobFormulas.forEach((formulaCell) => {
+    //   console.log('Incoming formulaCell: ', formulaCell);
+    //   const resolved = resolveFormula(formulaCell.formula, sheet);
+    //   console.log('Resolved Cell: ', resolved);
+    // });
   });
 
   // data.jobs.map((job: Job) => {

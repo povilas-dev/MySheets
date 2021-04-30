@@ -57,7 +57,10 @@ export function resolveFormula(
       }
     }
     if (Operator.NOT in formula) {
-      return {} as ValueCell;
+      if (formula.not !== undefined) {
+        acc = calculateNegation(formula.not as ReferenceCell, sheet);
+        return acc;
+      }
     }
     if (Operator.AND in formula) {
       return {} as ValueCell;
@@ -130,11 +133,16 @@ function calculateIsEqual(cells: ReferenceCell[], sheet: Sheet) {
   //return errors if length = 0
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
   const secondCell = getValueCellAtPosition(cells[1].reference, sheet);
-  console.log('firstCell: ', JSON.stringify(firstCell, null, 4));
-  console.log('secondCell: ', JSON.stringify(secondCell, null, 4));
 
   const firstValue = firstCell.value.number as number;
   const secondValue = secondCell.value.number as number;
   const result = firstValue === secondValue;
+  return {value: {boolean: result}} as ValueCell;
+}
+
+function calculateNegation(cell: ReferenceCell, sheet: Sheet) {
+  const valueCell = getValueCellAtPosition(cell.reference, sheet);
+  const value = valueCell.value.boolean as boolean;
+  const result = !value;
   return {value: {boolean: result}} as ValueCell;
 }

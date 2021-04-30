@@ -1,4 +1,5 @@
 import {resolveFormula} from './formula';
+import {mockBooleanSheetBuilder} from './mocks/boolean-sheet';
 import {mockDivideSheetBuilder} from './mocks/divide-sheet';
 import {deepResolveFormulaSheet, mockResultSheet} from './mocks/mocks';
 import {mockMultiplySheetBuilder} from './mocks/multiply-sheet';
@@ -233,7 +234,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {boolean: false}});
       });
     });
-    describe.only('IS_EQUAL', () => {
+    describe('IS_EQUAL', () => {
       it('should resolve a IS_EQUAL formula with direct references', () => {
         const sheet = mockSumSheetBuilder().build();
         const formulaCell1 = {
@@ -281,6 +282,18 @@ describe('Sheet', () => {
         };
         const resultCell = resolveFormula(formulaCell.formula, sheet);
         expect(resultCell).toEqual({value: {boolean: false}});
+      });
+    });
+    describe.only('NOT', () => {
+      it('should resolve a NOT formula with a deep reference', () => {
+        const sheet = mockBooleanSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            not: {reference: 'D1'},
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {boolean: true}});
       });
     });
   });

@@ -48,7 +48,7 @@ export interface FormulaCell {
   value?: undefined;
 }
 
-export type Formula = Partial<Record<Operator, Cell[]>> | ReferenceCell;
+export type Formula = Partial<Record<Operator, Cell[] | Cell>> | ReferenceCell;
 
 export type BaseCell = {cellId: string};
 export type Cell = ValueCell | ErrorCell | FormulaCell | ReferenceCell;
