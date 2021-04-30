@@ -14,8 +14,8 @@ export function getValueCellAtPosition(cellPosition: string, sheet: Sheet) {
   console.log('CELL at ', cellPosition, ' : ', cell);
   if ('value' in cell) return cell as ValueCell;
   if ('formula' in cell) {
-    console.log('REFERENCE: ,', cell);
-    return resolveFormula(cell.formula as FormulaCell, sheet) as ValueCell;
+    console.log('REFERENCE: ,', JSON.stringify(cell, null, 4));
+    return resolveFormula(cell as FormulaCell, sheet) as ValueCell;
   }
 }
 

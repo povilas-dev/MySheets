@@ -32,9 +32,9 @@ getJobData().then((data: JobsResponse) => {
     console.log(JSON.stringify(sheet, null, 4));
     // console.log(findFormulas(job.data));
     const jobFormulas = findFormulas(job.data);
-    jobFormulas.forEach((formula) => {
-      console.log('Incoming formula: ', formula);
-      const resolved = resolveFormula(formula, sheet);
+    jobFormulas.forEach((formulaCell) => {
+      console.log('Incoming formulaCell: ', formulaCell);
+      const resolved = resolveFormula(formulaCell.formula, sheet);
       console.log('Resolved Cell: ', resolved);
     });
   });

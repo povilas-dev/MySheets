@@ -33,18 +33,20 @@ describe('Sheet', () => {
   describe('resolveFormula', () => {
     it('should resolve a deep formula cell into a value cell', () => {
       const sheet = deepResolveFormulaSheet;
-      expect(resolveFormula({formula: {reference: 'B1'}}, sheet)).toEqual({
+      const formulaCell = {formula: {reference: 'B1'}};
+      expect(resolveFormula(formulaCell, sheet)).toEqual({
         value: {text: 'Last'},
       });
     });
     it('should resolve a shallow formula cell into a value cell', () => {
       const sheet = deepResolveFormulaSheet;
-      expect(resolveFormula({formula: {reference: 'H1'}}, sheet)).toEqual({
+      const formulaCell = {formula: {reference: 'H1'}};
+      expect(resolveFormula(formulaCell, sheet)).toEqual({
         value: {text: 'Last'},
       });
     });
     describe('SUM', () => {
-      it('should resolve a sum formula where every reference is direct', () => {
+      it('should resolve a SUM formula where every reference is direct', () => {
         const sheet = mockSumSheetBuilder().build();
         const sumFormula = {
           formula: {
@@ -62,7 +64,7 @@ describe('Sheet', () => {
           value: {number: 10},
         });
       });
-      it.skip('should resolve a sum formula with a deep reference', () => {
+      it('should resolve a SUM formula with a cell where a reference is to a SUM formula', () => {
         const sheet = mockSumSheetBuilder().build();
         const sumFormula = {
           formula: {
@@ -76,8 +78,34 @@ describe('Sheet', () => {
             ],
           },
         };
-        expect(resolveFormula(sumFormula, sheet)).toEqual({
-          value: {number: 24},
+        const resultCell = resolveFormula(sumFormula, sheet);
+        console.log(JSON.stringify(sheet, null, 4));
+        expect(resultCell).toEqual({
+          value: {number: 38},
+        });
+      });
+      it('should have updated formula cells into value cells in the sheet', () => {
+        const sheet = mockSumSheetBuilder().build();
+        const sumFormula = {
+          formula: {
+            sum: [
+              {
+                reference: 'C1',
+              },
+              {
+                reference: 'D1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(sumFormula, sheet);
+        console.log(JSON.stringify(sheet, null, 4));
+        const c1Cell = getCellAtPosition('C1', sheet);
+        const d1Cell = getCellAtPosition('D1', sheet);
+        console.log('c1Cell: ', JSON.stringify(c1Cell, null, 4));
+        console.log('d1Cell: ', JSON.stringify(d1Cell, null, 4));
+        expect(resultCell).toEqual({
+          value: {number: 38},
         });
       });
     });

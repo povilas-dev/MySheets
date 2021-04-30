@@ -10,46 +10,56 @@ import {getCellAtPosition, getValueCellAtPosition} from '../sheet';
 
 export function resolveFormula(formulaCell: FormulaCell, sheet: Sheet): Cell {
   console.log('formulaCell: ', formulaCell);
-  if ('reference' in formulaCell.formula) {
-    // resolve ReferenceCell
-    const resultCell = getCellAtPosition(formulaCell.formula.reference, sheet);
-    if ('formula' in resultCell) {
-      return resolveFormula(resultCell as FormulaCell, sheet);
+  if (formulaCell.formula) {
+    if ('reference' in formulaCell.formula) {
+      // resolve ReferenceCell
+      const resultCell = getCellAtPosition(
+        formulaCell.formula.reference,
+        sheet
+      );
+      if ('formula' in resultCell) {
+        return resolveFormula(resultCell as FormulaCell, sheet);
+      } else {
+        return resultCell;
+      }
     } else {
-      return resultCell;
-    }
-  } else {
-    // resolve FormulaOperator
-    if (Operator.SUM in formulaCell.formula) {
-      if (formulaCell.formula.sum !== undefined)
-        return calculateSum(formulaCell.formula.sum as ReferenceCell[], sheet);
-    }
-    if (Operator.MULTIPLY in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.DIVIDE in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.IS_GREATER in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.IS_EQUAL in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.NOT in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.AND in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.OR in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.IF in formulaCell.formula) {
-      return formulaCell;
-    }
-    if (Operator.CONCAT in formulaCell.formula) {
-      return formulaCell;
+      // resolve FormulaOperator
+      if (Operator.SUM in formulaCell.formula) {
+        if (formulaCell.formula.sum !== undefined) {
+          const resultCell = calculateSum(
+            formulaCell.formula.sum as ReferenceCell[],
+            sheet
+          );
+          return resultCell;
+        }
+      }
+      if (Operator.MULTIPLY in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.DIVIDE in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.IS_GREATER in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.IS_EQUAL in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.NOT in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.AND in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.OR in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.IF in formulaCell.formula) {
+        return formulaCell;
+      }
+      if (Operator.CONCAT in formulaCell.formula) {
+        return formulaCell;
+      }
     }
     return formulaCell;
   }
