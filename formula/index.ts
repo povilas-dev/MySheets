@@ -39,7 +39,10 @@ export function resolveFormula(
       }
     }
     if (Operator.DIVIDE in formula) {
-      return {} as ValueCell;
+      if (formula.divide !== undefined) {
+        acc = calculateDivide(formula.divide as ReferenceCell[], sheet);
+        return acc;
+      }
     }
     if (Operator.IS_GREATER in formula) {
       return {} as ValueCell;
@@ -86,6 +89,20 @@ function calculateMultiply(cells: ReferenceCell[], sheet: Sheet) {
       ?.number;
     if (cellValue !== undefined) {
       result *= cellValue;
+    }
+  });
+  return {value: {number: result}} as ValueCell;
+}
+
+function calculateDivide(cells: ReferenceCell[], sheet: Sheet) {
+  const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
+  let result = firstCell.value.number as number;
+  const slicedCells = cells.slice(1);
+  slicedCells.forEach((cell) => {
+    const cellValue = getValueCellAtPosition(cell.reference, sheet)?.value
+      ?.number;
+    if (cellValue !== undefined) {
+      result = result / cellValue;
     }
   });
   return {value: {number: result}} as ValueCell;

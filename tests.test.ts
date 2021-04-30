@@ -1,4 +1,5 @@
 import {resolveFormula} from './formula';
+import {mockDivideSheetBuilder} from './mocks/divide-sheet';
 import {deepResolveFormulaSheet, mockResultSheet} from './mocks/mocks';
 import {mockMultiplySheetBuilder} from './mocks/multiply-sheet';
 import {mockSumSheetBuilder} from './mocks/sum-sheet';
@@ -124,7 +125,7 @@ describe('Sheet', () => {
         });
       });
     });
-    describe.only('MULTIPLY', () => {
+    describe('MULTIPLY', () => {
       it('should resolve a MULTIPLY formula with direct references', () => {
         const sheet = mockMultiplySheetBuilder().build();
         const formulaCell = {
@@ -158,6 +159,42 @@ describe('Sheet', () => {
         };
         const resultCell = resolveFormula(formulaCell.formula, sheet);
         expect(resultCell).toEqual({value: {number: 221184}});
+      });
+    });
+    describe.only('DIVIDE', () => {
+      it('should resolve a DIVIDE formula with direct references', () => {
+        const sheet = mockDivideSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            divide: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {number: 25}});
+      });
+      it('should resolve a DIVIDE formula with deep references', () => {
+        const sheet = mockDivideSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            divide: [
+              {
+                reference: 'C1',
+              },
+              {
+                reference: 'D1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {number: 1.5625}});
       });
     });
   });
