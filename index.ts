@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import {ColumnPosition} from './enums';
 import {resolveFormula} from './formula';
 import {Job, JobsResponse} from './interfaces';
-import {mockJobs, mockResultSheet} from './mocks';
+import {mockJobs, mockResultSheet} from './mocks/mocks';
 import {findFormulas} from './sheet';
 const HUB_URL =
   'https://www.wix.com/_serverless/hiring-task-spreadsheet-evaluator';

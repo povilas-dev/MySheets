@@ -1,9 +1,7 @@
 import {resolveFormula} from './formula';
-import {
-  deepResolveFormulaSheet,
-  mockResultSheet,
-  mockSumSheetBuilder,
-} from './mocks';
+import {deepResolveFormulaSheet, mockResultSheet} from './mocks/mocks';
+import {mockMultiplySheetBuilder} from './mocks/multiply-sheet';
+import {mockSumSheetBuilder} from './mocks/sum-sheet';
 import {
   getCellAtPosition,
   getValueCellAtPosition,
@@ -43,7 +41,6 @@ describe('Sheet', () => {
     });
     it('should return a value cell for given formula cell', () => {
       const sheet = mockSumSheetBuilder().build();
-      console.log(JSON.stringify(sheet, null, 4));
       expect(getValueCellAtPosition('C1', sheet)).toEqual({
         value: {number: 14},
       });
@@ -103,7 +100,6 @@ describe('Sheet', () => {
           },
         };
         const resultCell = resolveFormula(sumFormulaCell.formula, sheet);
-        console.log(JSON.stringify(sheet, null, 4));
         expect(resultCell).toEqual({
           value: {number: 38},
         });
@@ -123,14 +119,45 @@ describe('Sheet', () => {
           },
         };
         const resultCell = resolveFormula(sumFormulaCell.formula, sheet);
-        console.log(JSON.stringify(sheet, null, 4));
-        const c1Cell = getCellAtPosition('C1', sheet);
-        const d1Cell = getCellAtPosition('D1', sheet);
-        console.log('c1Cell: ', JSON.stringify(c1Cell, null, 4));
-        console.log('d1Cell: ', JSON.stringify(d1Cell, null, 4));
         expect(resultCell).toEqual({
           value: {number: 38},
         });
+      });
+    });
+    describe.only('MULTIPLY', () => {
+      it('should resolve a MULTIPLY formula with direct references', () => {
+        const sheet = mockMultiplySheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            multiply: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {number: 24}});
+      });
+      it('should resolve a MULTIPLY formula with deep references', () => {
+        const sheet = mockMultiplySheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            multiply: [
+              {
+                reference: 'C1',
+              },
+              {
+                reference: 'D1',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {number: 221184}});
       });
     });
   });

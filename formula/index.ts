@@ -33,7 +33,10 @@ export function resolveFormula(
       }
     }
     if (Operator.MULTIPLY in formula) {
-      return {} as ValueCell;
+      if (formula.multiply !== undefined) {
+        acc = calculateMultiply(formula.multiply as ReferenceCell[], sheet);
+        return acc;
+      }
     }
     if (Operator.DIVIDE in formula) {
       return {} as ValueCell;
@@ -71,6 +74,18 @@ function calculateSum(cells: ReferenceCell[], sheet: Sheet) {
     console.log('Cell Value: ', cellValue);
     if (cellValue !== undefined) {
       result += cellValue;
+    }
+  });
+  return {value: {number: result}} as ValueCell;
+}
+
+function calculateMultiply(cells: ReferenceCell[], sheet: Sheet) {
+  let result = 1;
+  cells.forEach((cell) => {
+    const cellValue = getValueCellAtPosition(cell.reference, sheet)?.value
+      ?.number;
+    if (cellValue !== undefined) {
+      result *= cellValue;
     }
   });
   return {value: {number: result}} as ValueCell;
