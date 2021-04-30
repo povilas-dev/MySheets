@@ -15,6 +15,18 @@ async function getJobData() {
   // });
 }
 
+function sendSubmission(jobResults: Job[]) {
+  // add body
+  const body = {};
+  fetch(submissionUrl, {
+    method: 'post',
+    body: JSON.stringify(body),
+    headers: {'Content-Type': 'application/json'},
+  })
+    .then((res) => res.json())
+    .then((json) => console.log(json));
+}
+
 export function doJobs(jobs: Job[]) {
   jobs.forEach((job) => {});
 }
@@ -23,6 +35,7 @@ const setJobs = (newJobs: Job[]) => (jobs = newJobs);
 getJobData().then((data: JobsResponse) => {
   setSubmissionUrl(data.submissionUrl);
   setJobs(data.jobs);
+  console.log(submissionUrl);
 
   data.jobs.forEach((job) => {
     console.log('job: ', job.id);

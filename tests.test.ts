@@ -450,7 +450,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {text: 'AAAABBBBB'}});
       });
     });
-    describe.only('IF', () => {
+    describe('IF', () => {
       it('should resolve an IF formula', () => {
         const sheet = mockSumSheetBuilder().build();
         const formulaCell = {
