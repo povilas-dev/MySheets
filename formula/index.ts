@@ -75,7 +75,10 @@ export function resolveFormula(
       }
     }
     if (Operator.IF in formula) {
-      return {} as ValueCell;
+      if (formula.if) {
+        acc = calculateIf(formula.if as any[], sheet) as ValueCell;
+        return acc;
+      }
     }
     if (Operator.CONCAT in formula) {
       if (formula.concat !== undefined) {
@@ -175,4 +178,32 @@ function calculateConcat(cells: ReferenceCell[], sheet: Sheet) {
   );
   const result = cellStrings.join('');
   return {value: {text: result}} as ValueCell;
+}
+
+function calculateIf(args: any[], sheet: Sheet) {
+  const condition = args[0] as Formula | boolean;
+  const firstValueCell = args[1];
+  const secondValueCell = args[2];
+  // console.log('args:', JSON.stringify(args, null, 4));
+  // console.log('condition:', JSON.stringify(condition, null, 4));
+  // console.log('firstValueCell:', JSON.stringify(firstValueCell, null, 4));
+  // console.log('secondValueCell:', JSON.stringify(secondValueCell, null, 4));
+
+  let conditionValue = null;
+
+  if (typeof condition === 'boolean') {
+    conditionValue = condition;
+  } else {
+    conditionValue = resolveFormula(condition, sheet).value.boolean as boolean;
+  }
+
+  if (conditionValue) {
+    if ('reference' in firstValueCell) {
+      return getValueCellAtPosition(firstValueCell.reference, sheet);
+    } else return firstValueCell as ValueCell;
+  } else {
+    if ('reference' in secondValueCell) {
+      return getValueCellAtPosition(secondValueCell.reference, sheet);
+    } else return secondValueCell as ValueCell;
+  }
 }

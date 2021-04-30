@@ -450,5 +450,23 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {text: 'AAAABBBBB'}});
       });
     });
+    describe.only('IF', () => {
+      it('should resolve an IF formula', () => {
+        const sheet = mockSumSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            if: [
+              {
+                is_greater: [{reference: 'A1'}, {reference: 'B1'}],
+              },
+              {value: {text: 'Stonks!'}},
+              {value: {text: 'Sad face'}},
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula as any, sheet);
+        expect(resultCell).toEqual({value: {text: 'Stonks!'}});
+      });
+    });
   });
 });
