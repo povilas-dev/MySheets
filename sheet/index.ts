@@ -13,10 +13,10 @@ export function getValueCellAtPosition(
 ): ValueCell {
   const position = parseCellPosition(cellPosition);
   const cell = sheet[position.column][position.row];
-  console.log('POSITION: ', position);
-  console.log('CELL at ', cellPosition, ' : ', cell);
+  // console.log('POSITION: ', position);
+  // console.log('CELL at ', cellPosition, ' : ', cell);
   if ('formula' in cell) {
-    console.log('REFERENCE: ,', JSON.stringify(cell, null, 4));
+    // console.log('REFERENCE: ,', JSON.stringify(cell, null, 4));
     const resultCell = resolveFormula(cell.formula as Formula, sheet);
     updateCellAtPosition(cellPosition, resultCell, sheet);
     return resultCell as ValueCell;

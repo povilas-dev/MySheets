@@ -14,7 +14,7 @@ export function resolveFormula(
   sheet: Sheet,
   acc = {} as ValueCell
 ): ValueCell {
-  console.log('formula: ', formula);
+  // console.log('formula: ', formula);
   if ('reference' in formula) {
     // resolve ReferenceCell
     const resultCell = getCellAtPosition(formula.reference, sheet);
@@ -78,7 +78,10 @@ export function resolveFormula(
       return {} as ValueCell;
     }
     if (Operator.CONCAT in formula) {
-      return {} as ValueCell;
+      if (formula.concat !== undefined) {
+        acc = calculateConcat(formula.concat as ReferenceCell[], sheet);
+        return acc;
+      }
     }
   }
   return acc;
@@ -89,7 +92,6 @@ function calculateSum(cells: ReferenceCell[], sheet: Sheet) {
   cells.forEach((cell) => {
     const cellValue = getValueCellAtPosition(cell.reference, sheet)?.value
       ?.number;
-    console.log('Cell Value: ', cellValue);
     if (cellValue !== undefined) {
       result += cellValue;
     }
@@ -165,4 +167,12 @@ function calculateOr(cells: ReferenceCell[], sheet: Sheet) {
     (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.boolean
   );
   return {value: {boolean: result}} as ValueCell;
+}
+
+function calculateConcat(cells: ReferenceCell[], sheet: Sheet) {
+  const cellStrings = cells.map(
+    (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.text
+  );
+  const result = cellStrings.join('');
+  return {value: {text: result}} as ValueCell;
 }

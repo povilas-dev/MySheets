@@ -3,6 +3,7 @@ import {mockBooleanSheetBuilder} from './mocks/boolean-sheet';
 import {mockDivideSheetBuilder} from './mocks/divide-sheet';
 import {deepResolveFormulaSheet, mockResultSheet} from './mocks/mocks';
 import {mockMultiplySheetBuilder} from './mocks/multiply-sheet';
+import {mockStringSheetBuilder} from './mocks/string-sheet';
 import {mockSumSheetBuilder} from './mocks/sum-sheet';
 import {
   getCellAtPosition,
@@ -347,7 +348,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {boolean: false}});
       });
     });
-    describe.only('OR', () => {
+    describe('OR', () => {
       it('should resolve a OR formula with direct references', () => {
         const sheet = mockBooleanSheetBuilder().build();
         const formulaCell1 = {
@@ -396,6 +397,57 @@ describe('Sheet', () => {
         };
         const resultCell = resolveFormula(formulaCell.formula, sheet);
         expect(resultCell).toEqual({value: {boolean: true}});
+      });
+    });
+
+    describe('CONCAT', () => {
+      it('should resolve a CONCAT formula with direct references', () => {
+        const sheet = mockStringSheetBuilder().build();
+        const formulaCell1 = {
+          formula: {
+            concat: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const formulaCell2 = {
+          formula: {
+            concat: [
+              {
+                reference: 'B1',
+              },
+              {
+                reference: 'B1',
+              },
+            ],
+          },
+        };
+        const resultCell1 = resolveFormula(formulaCell1.formula, sheet);
+        const resultCell2 = resolveFormula(formulaCell2.formula, sheet);
+        expect(resultCell1).toEqual({value: {text: 'AABB'}});
+        expect(resultCell2).toEqual({value: {text: 'BBBB'}});
+      });
+      it('should resolve a CONCAT formula with deep references', () => {
+        const sheet = mockStringSheetBuilder().build();
+        const formulaCell = {
+          formula: {
+            concat: [
+              {
+                reference: 'A1',
+              },
+              {
+                reference: 'B3',
+              },
+            ],
+          },
+        };
+        const resultCell = resolveFormula(formulaCell.formula, sheet);
+        expect(resultCell).toEqual({value: {text: 'AAAABBBBB'}});
       });
     });
   });
