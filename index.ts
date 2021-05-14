@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import {alphabet} from './enums';
-// import {ColumnPosition} from './enums';
 import {resolveFormula} from './formula';
 import {Job, JobsResponse} from './interfaces';
 import {findFormulas, updateCellAtPosition} from './sheet';
@@ -10,15 +9,11 @@ let submissionUrl = '';
 let jobs = [];
 async function getJobData() {
   return fetch(`${HUB_URL}/jobs`).then((response: any) => response.json());
-  // .then((data: JobsResponse) => {
-  //   console.log(data);
-  //   // data.jobs.map((job: Job) => console.log(job.data));
-  // });
 }
 
-function sendSubmission(jobResults: Job[]) {
+function sendSubmission(result: any) {
   // add body
-  const body = {};
+  const body = result;
   fetch(submissionUrl, {
     method: 'post',
     body: JSON.stringify(body),
@@ -29,8 +24,10 @@ function sendSubmission(jobResults: Job[]) {
 }
 
 export function doJob(job: Job) {
-  console.log('job: ', job.id);
-  console.log(JSON.stringify(job.data, null, 4));
+  if (job.id === 'job-12' || job.id === 'job-14') {
+    console.log('job: ', job.id);
+    console.log(JSON.stringify(job.data, null, 4));
+  }
   const sheet = job.data;
   const jobFormulas = findFormulas(job.data);
   jobFormulas.forEach((jobFormula) => {
@@ -45,7 +42,11 @@ export function doJob(job: Job) {
     );
   });
   const jobResult = {id: job.id, data: sheet};
-  console.log(jobResult);
+  if (job.id === 'job-12' || job.id === 'job-14') {
+    console.log('job: ', job.id);
+    console.log(JSON.stringify(jobResult, null, 4));
+  }
+  // console.log(jobResult);
   return jobResult;
 }
 const setSubmissionUrl = (url: string) => (submissionUrl = url);
@@ -61,8 +62,10 @@ getJobData().then((data: JobsResponse) => {
     // console.log(JSON.stringify(sheet, null, 4));
     results.push(doJob(job));
   });
-  console.log('SUBMISSION BODY');
-  console.log(JSON.stringify(submissionBody, null, 4));
+  // console.log('SUBMISSION BODY');
+  // console.log(JSON.stringify(submissionBody, null, 4));
+
+  // sendSubmission(submissionBody);
 
   // data.jobs.map((job: Job) => {
   //   console.log(JSON.stringify(job, null, 4));
