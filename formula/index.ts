@@ -1,8 +1,8 @@
 import {Operator} from '../enums';
 import {
   Cell,
+  ErrorCell,
   Formula,
-  FormulaCell,
   ReferenceCell,
   Sheet,
   ValueCell,
@@ -12,8 +12,8 @@ import {getCellAtPosition, getValueCellAtPosition} from '../sheet';
 export function resolveFormula(
   formula: Formula,
   sheet: Sheet,
-  acc = {} as ValueCell
-): ValueCell {
+  acc = {} as ValueCell | ErrorCell
+): ValueCell | ErrorCell {
   // console.log('formula: ', formula);
   if ('reference' in formula) {
     // resolve ReferenceCell
@@ -159,6 +159,15 @@ function calculateNegation(cell: ReferenceCell, sheet: Sheet) {
 }
 
 function calculateAnd(cells: ReferenceCell[], sheet: Sheet) {
+  const cellValueObjects = cells.map(
+    (cell) => getValueCellAtPosition(cell.reference, sheet)?.value
+  );
+  const doesNotPassBooleanTypeCheck = cellValueObjects.some(
+    (element) => 'number' in element || 'text' in element
+  );
+  if (doesNotPassBooleanTypeCheck)
+    return {error: 'Formula did not pass boolean type check'} as ErrorCell;
+
   const filteredCells = cells.filter(
     (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.boolean
   );
@@ -166,6 +175,15 @@ function calculateAnd(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateOr(cells: ReferenceCell[], sheet: Sheet) {
+  const cellValueObjects = cells.map(
+    (cell) => getValueCellAtPosition(cell.reference, sheet)?.value
+  );
+  const doesNotPassBooleanTypeCheck = cellValueObjects.some(
+    (element) => 'number' in element || 'text' in element
+  );
+  if (doesNotPassBooleanTypeCheck)
+    return {error: 'Formula did not pass boolean type check'} as ErrorCell;
+
   const result = cells.some(
     (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.boolean
   );
@@ -196,7 +214,7 @@ function calculateIf(args: any[], sheet: Sheet) {
   if (typeof condition === 'boolean') {
     conditionValue = condition;
   } else {
-    conditionValue = resolveFormula(condition, sheet).value.boolean as boolean;
+    conditionValue = resolveFormula(condition, sheet).value?.boolean as boolean;
   }
 
   if (conditionValue) {

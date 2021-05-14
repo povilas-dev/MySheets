@@ -24,7 +24,7 @@ function sendSubmission(result: any) {
 }
 
 export function doJob(job: Job) {
-  if (job.id === 'job-12' || job.id === 'job-14') {
+  if (job.id === 'job-12') {
     console.log('job: ', job.id);
     console.log(JSON.stringify(job.data, null, 4));
   }
@@ -42,7 +42,7 @@ export function doJob(job: Job) {
     );
   });
   const jobResult = {id: job.id, data: sheet};
-  if (job.id === 'job-12' || job.id === 'job-14') {
+  if (job.id === 'job-12') {
     console.log('job: ', job.id);
     console.log(JSON.stringify(jobResult, null, 4));
   }
@@ -65,7 +65,7 @@ getJobData().then((data: JobsResponse) => {
   // console.log('SUBMISSION BODY');
   // console.log(JSON.stringify(submissionBody, null, 4));
 
-  // sendSubmission(submissionBody);
+  sendSubmission(submissionBody);
 
   // data.jobs.map((job: Job) => {
   //   console.log(JSON.stringify(job, null, 4));

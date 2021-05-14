@@ -1,5 +1,13 @@
 import {resolveFormula} from '../formula';
-import {Cell, Formula, FormulaCell, Job, Sheet, ValueCell} from '../interfaces';
+import {
+  Cell,
+  ErrorCell,
+  Formula,
+  FormulaCell,
+  Job,
+  Sheet,
+  ValueCell,
+} from '../interfaces';
 import {parseCellPosition} from '../utils';
 
 export function getCellAtPosition(cellPosition: string, sheet: Sheet) {
@@ -26,7 +34,7 @@ export function getValueCellAtPosition(
 
 export function updateCellAtPosition(
   cellPosition: string,
-  cellValue: ValueCell,
+  cellValue: ValueCell | ErrorCell,
   sheet: Sheet
 ) {
   const position = parseCellPosition(cellPosition);
