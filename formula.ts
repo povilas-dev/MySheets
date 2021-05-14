@@ -1,4 +1,4 @@
-import {Operator} from '../enums';
+import {Operator} from './enums';
 import {
   Cell,
   ErrorCell,
@@ -6,8 +6,8 @@ import {
   ReferenceCell,
   Sheet,
   ValueCell,
-} from '../interfaces';
-import {getValueCellAtPosition} from '../sheet';
+} from './interfaces';
+import {getValueCellAtPosition} from './sheet';
 
 export function resolveFormula(
   formula: Formula,
@@ -20,7 +20,6 @@ export function resolveFormula(
     // resolve FormulaOperator
     if (Operator.SUM in formula) {
       if (formula.sum !== undefined) {
-        calculateSum(formula.sum as ReferenceCell[], sheet);
         return calculateSum(formula.sum as ReferenceCell[], sheet);
       }
     }
@@ -104,7 +103,7 @@ function calculateMultiply(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateDivide(cells: ReferenceCell[], sheet: Sheet) {
-  if (cells.length <= 0) {
+  if (cells.length < 2) {
     return {error: 'Values for number operation are missing'};
   }
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
@@ -121,7 +120,7 @@ function calculateDivide(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateIsGreater(cells: ReferenceCell[], sheet: Sheet) {
-  if (cells.length <= 0) {
+  if (cells.length < 2) {
     return {error: 'Values for number operation are missing'};
   }
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
@@ -135,10 +134,7 @@ function calculateIsGreater(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateIsEqual(cells: ReferenceCell[], sheet: Sheet) {
-  if (cells.length <= 0) {
-    return {error: 'Values for number operation are missing'};
-  }
-  if (cells.length <= 0) {
+  if (cells.length < 2) {
     return {error: 'Values for number operation are missing'};
   }
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);

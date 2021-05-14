@@ -1,4 +1,4 @@
-import {resolveFormula} from '../formula';
+import {resolveFormula} from './formula';
 import {
   Cell,
   ErrorCell,
@@ -7,8 +7,8 @@ import {
   Job,
   Sheet,
   ValueCell,
-} from '../interfaces';
-import {parseCellPosition} from '../utils';
+} from './interfaces';
+import {parseCellPosition} from './utils';
 
 export function getValueCellAtPosition(
   cellPosition: string,

@@ -1,4 +1,4 @@
-import {ColumnPosition} from '../enums';
+import {ColumnPosition} from './enums';
 
 export function parseCellPosition(cellPosition: string) {
   const positionStrSplit = cellPosition.split('');
