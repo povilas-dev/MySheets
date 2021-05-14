@@ -7,86 +7,70 @@ import {
   Sheet,
   ValueCell,
 } from '../interfaces';
-import {getCellAtPosition, getValueCellAtPosition} from '../sheet';
+import {getValueCellAtPosition} from '../sheet';
 
 export function resolveFormula(
   formula: Formula,
-  sheet: Sheet,
-  acc = {} as ValueCell | ErrorCell
+  sheet: Sheet
 ): ValueCell | ErrorCell {
   if ('reference' in formula) {
     // resolve ReferenceCell
-    const resultCell = getCellAtPosition(formula.reference, sheet);
-    if ('formula' in resultCell) {
-      return resolveFormula(resultCell.formula as Formula, sheet, acc);
-    } else {
-      acc = resultCell as ValueCell;
-      return acc;
-    }
+    return getValueCellAtPosition(formula.reference, sheet);
   } else {
     // resolve FormulaOperator
     if (Operator.SUM in formula) {
       if (formula.sum !== undefined) {
-        acc = calculateSum(formula.sum as ReferenceCell[], sheet);
-        return acc;
+        calculateSum(formula.sum as ReferenceCell[], sheet);
+        return calculateSum(formula.sum as ReferenceCell[], sheet);
       }
     }
     if (Operator.MULTIPLY in formula) {
       if (formula.multiply !== undefined) {
-        acc = calculateMultiply(formula.multiply as ReferenceCell[], sheet);
-        return acc;
+        return calculateMultiply(formula.multiply as ReferenceCell[], sheet);
       }
     }
     if (Operator.DIVIDE in formula) {
       if (formula.divide !== undefined) {
-        acc = calculateDivide(formula.divide as ReferenceCell[], sheet);
-        return acc;
+        return calculateDivide(formula.divide as ReferenceCell[], sheet);
       }
     }
     if (Operator.IS_GREATER in formula) {
       if (formula.is_greater !== undefined) {
-        acc = calculateIsGreater(formula.is_greater as ReferenceCell[], sheet);
-        return acc;
+        return calculateIsGreater(formula.is_greater as ReferenceCell[], sheet);
       }
     }
     if (Operator.IS_EQUAL in formula) {
       if (formula.is_equal !== undefined) {
-        acc = calculateIsEqual(formula.is_equal as ReferenceCell[], sheet);
-        return acc;
+        return calculateIsEqual(formula.is_equal as ReferenceCell[], sheet);
       }
     }
     if (Operator.NOT in formula) {
       if (formula.not !== undefined) {
-        acc = calculateNegation(formula.not as ReferenceCell, sheet);
-        return acc;
+        return calculateNegation(formula.not as ReferenceCell, sheet);
       }
     }
     if (Operator.AND in formula) {
       if (formula.and !== undefined) {
-        acc = calculateAnd(formula.and as ReferenceCell[], sheet);
-        return acc;
+        return calculateAnd(formula.and as ReferenceCell[], sheet);
       }
     }
     if (Operator.OR in formula) {
       if (formula.or !== undefined) {
-        acc = calculateOr(formula.or as ReferenceCell[], sheet);
-        return acc;
+        return calculateOr(formula.or as ReferenceCell[], sheet);
       }
     }
     if (Operator.IF in formula) {
       if (formula.if) {
-        acc = calculateIf(formula.if as any[], sheet) as ValueCell;
-        return acc;
+        return calculateIf(formula.if as any[], sheet) as ValueCell;
       }
     }
     if (Operator.CONCAT in formula) {
       if (formula.concat !== undefined) {
-        acc = calculateConcat(formula.concat as Cell[], sheet);
-        return acc;
+        return calculateConcat(formula.concat as Cell[], sheet);
       }
     }
   }
-  return acc;
+  return formula as ValueCell;
 }
 
 function calculateSum(cells: ReferenceCell[], sheet: Sheet) {
@@ -216,16 +200,10 @@ function calculateConcat(cells: Cell[], sheet: Sheet) {
 }
 
 function calculateIf(args: any[], sheet: Sheet) {
-  const condition = args[0] as Formula | boolean;
+  const condition = args[0] as Formula;
   const firstValueCell = args[1];
   const secondValueCell = args[2];
-  let conditionValue = null;
-
-  if (typeof condition === 'boolean') {
-    conditionValue = condition;
-  } else {
-    conditionValue = resolveFormula(condition, sheet).value?.boolean as boolean;
-  }
+  let conditionValue = resolveFormula(condition, sheet).value?.boolean;
 
   if (conditionValue) {
     if ('reference' in firstValueCell) {

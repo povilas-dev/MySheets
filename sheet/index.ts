@@ -10,11 +10,6 @@ import {
 } from '../interfaces';
 import {parseCellPosition} from '../utils';
 
-export function getCellAtPosition(cellPosition: string, sheet: Sheet) {
-  const position = parseCellPosition(cellPosition);
-  return sheet[position.column][position.row] as Cell;
-}
-
 export function getValueCellAtPosition(
   cellPosition: string,
   sheet: Sheet

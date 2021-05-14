@@ -5,18 +5,14 @@ import {deepResolveFormulaSheet, mockResultSheet} from './mocks/mocks';
 import {mockMultiplySheetBuilder} from './mocks/multiply-sheet';
 import {mockStringSheetBuilder} from './mocks/string-sheet';
 import {mockSumSheetBuilder} from './mocks/sum-sheet';
-import {
-  getCellAtPosition,
-  getValueCellAtPosition,
-  updateCellAtPosition,
-} from './sheet';
+import {getValueCellAtPosition, updateCellAtPosition} from './sheet';
 describe('Sheet', () => {
-  describe('getCellAtPosition', () => {
+  describe('getValueCellAtPosition', () => {
     it('should return a value for provided cell reference id', () => {
       const mockSheet = mockResultSheet;
-      const resultCellA1 = getCellAtPosition('A1', mockSheet);
-      const resultCellA2 = getCellAtPosition('A2', mockSheet);
-      const resultCellC3 = getCellAtPosition('C3', mockSheet);
+      const resultCellA1 = getValueCellAtPosition('A1', mockSheet);
+      const resultCellA2 = getValueCellAtPosition('A2', mockSheet);
+      const resultCellC3 = getValueCellAtPosition('C3', mockSheet);
 
       expect(resultCellA1.value).toEqual({number: 5});
       expect(resultCellA2.value).toEqual({text: 'AA'});
@@ -34,9 +30,9 @@ describe('Sheet', () => {
   describe('getValueCellAtPosition', () => {
     it('should return a value cell for given shallow reference', () => {
       const mockSheet = mockResultSheet;
-      const resultCellA1 = getCellAtPosition('A1', mockSheet);
-      const resultCellA2 = getCellAtPosition('A2', mockSheet);
-      const resultCellC3 = getCellAtPosition('C3', mockSheet);
+      const resultCellA1 = getValueCellAtPosition('A1', mockSheet);
+      const resultCellA2 = getValueCellAtPosition('A2', mockSheet);
+      const resultCellC3 = getValueCellAtPosition('C3', mockSheet);
 
       expect(resultCellA1.value).toEqual({number: 5});
       expect(resultCellA2.value).toEqual({text: 'AA'});
@@ -51,7 +47,7 @@ describe('Sheet', () => {
     it('should update reference cell to value cell in sheet', () => {
       const sheet = mockSumSheetBuilder().build();
       const resultCell = getValueCellAtPosition('C1', sheet);
-      expect(getCellAtPosition('C1', sheet)).toEqual(resultCell);
+      expect(getValueCellAtPosition('C1', sheet)).toEqual(resultCell);
     });
   });
   describe('resolveFormula', () => {
