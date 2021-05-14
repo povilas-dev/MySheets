@@ -33,14 +33,6 @@ export function updateCellAtPosition(
   sheet[position.column][position.row] = cellValue;
 }
 
-export function evaluateSheet(providedJob: Job) {
-  const initialSheet = providedJob.data;
-
-  let resultSheet = initialSheet;
-
-  return resultSheet;
-}
-
 export function findFormulas(
   sheet: Sheet
 ): {formulaCell: FormulaCell; cellPosition: {row: number; column: number}}[] {

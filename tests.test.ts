@@ -1,10 +1,10 @@
 import {resolveFormula} from './formula';
-import {mockBooleanSheetBuilder} from './mocks/boolean-sheet';
-import {mockDivideSheetBuilder} from './mocks/divide-sheet';
+import {mockBooleanSheet} from './mocks/boolean-sheet';
+import {mockDivideSheet} from './mocks/divide-sheet';
 import {deepResolveFormulaSheet, mockResultSheet} from './mocks/mocks';
-import {mockMultiplySheetBuilder} from './mocks/multiply-sheet';
-import {mockStringSheetBuilder} from './mocks/string-sheet';
-import {mockSumSheetBuilder} from './mocks/sum-sheet';
+import {mockMultiplySheet} from './mocks/multiply-sheet';
+import {mockStringSheet} from './mocks/string-sheet';
+import {mockSumSheet} from './mocks/sum-sheet';
 import {getValueCellAtPosition, updateCellAtPosition} from './sheet';
 describe('Sheet', () => {
   describe('getValueCellAtPosition', () => {
@@ -21,7 +21,7 @@ describe('Sheet', () => {
   });
   describe('updateCellAtPosition', () => {
     it('should update cell value at position in sheet', () => {
-      const sheet = mockSumSheetBuilder().build();
+      const sheet = mockSumSheet();
       const updatedValue = {value: {number: 0}};
       updateCellAtPosition('A1', updatedValue, sheet);
       expect(getValueCellAtPosition('A1', sheet)?.value.number).toBe(0);
@@ -39,13 +39,13 @@ describe('Sheet', () => {
       expect(resultCellC3.value).toEqual({text: 'CCC'});
     });
     it('should return a value cell for given formula cell', () => {
-      const sheet = mockSumSheetBuilder().build();
+      const sheet = mockSumSheet();
       expect(getValueCellAtPosition('C1', sheet)).toEqual({
         value: {number: 14},
       });
     });
     it('should update reference cell to value cell in sheet', () => {
-      const sheet = mockSumSheetBuilder().build();
+      const sheet = mockSumSheet();
       const resultCell = getValueCellAtPosition('C1', sheet);
       expect(getValueCellAtPosition('C1', sheet)).toEqual(resultCell);
     });
@@ -67,7 +67,7 @@ describe('Sheet', () => {
     });
     describe('SUM', () => {
       it('should resolve a SUM formula where every reference is direct', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const sumFormulaCell = {
           formula: {
             sum: [
@@ -85,7 +85,7 @@ describe('Sheet', () => {
         });
       });
       it('should resolve a SUM formula with a cell where a reference is to a SUM formula', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const sumFormulaCell = {
           formula: {
             sum: [
@@ -104,7 +104,7 @@ describe('Sheet', () => {
         });
       });
       it('should have updated formula cells into value cells in the sheet', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const sumFormulaCell = {
           formula: {
             sum: [
@@ -125,7 +125,7 @@ describe('Sheet', () => {
     });
     describe('MULTIPLY', () => {
       it('should resolve a MULTIPLY formula with direct references', () => {
-        const sheet = mockMultiplySheetBuilder().build();
+        const sheet = mockMultiplySheet();
         const formulaCell = {
           formula: {
             multiply: [
@@ -142,7 +142,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {number: 24}});
       });
       it('should resolve a MULTIPLY formula with deep references', () => {
-        const sheet = mockMultiplySheetBuilder().build();
+        const sheet = mockMultiplySheet();
         const formulaCell = {
           formula: {
             multiply: [
@@ -161,7 +161,7 @@ describe('Sheet', () => {
     });
     describe('DIVIDE', () => {
       it('should resolve a DIVIDE formula with direct references', () => {
-        const sheet = mockDivideSheetBuilder().build();
+        const sheet = mockDivideSheet();
         const formulaCell = {
           formula: {
             divide: [
@@ -178,7 +178,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {number: 25}});
       });
       it('should resolve a DIVIDE formula with deep references', () => {
-        const sheet = mockDivideSheetBuilder().build();
+        const sheet = mockDivideSheet();
         const formulaCell = {
           formula: {
             divide: [
@@ -197,7 +197,7 @@ describe('Sheet', () => {
     });
     describe('IS_GREATER', () => {
       it('should resolve a IS_GREATER formula with direct references', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const formulaCell = {
           formula: {
             is_greater: [
@@ -214,7 +214,7 @@ describe('Sheet', () => {
         expect(resultCell).toEqual({value: {boolean: true}});
       });
       it('should resolve a IS_GREATER formula with deep references', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const formulaCell = {
           formula: {
             is_greater: [
@@ -233,7 +233,7 @@ describe('Sheet', () => {
     });
     describe('IS_EQUAL', () => {
       it('should resolve a IS_EQUAL formula with direct references', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const formulaCell1 = {
           formula: {
             is_equal: [
@@ -264,7 +264,7 @@ describe('Sheet', () => {
         expect(resultCell2).toEqual({value: {boolean: true}});
       });
       it('should resolve a IS_EQUAL formula with deep references', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const formulaCell = {
           formula: {
             is_equal: [
@@ -283,7 +283,7 @@ describe('Sheet', () => {
     });
     describe('NOT', () => {
       it('should resolve a NOT formula with a deep reference', () => {
-        const sheet = mockBooleanSheetBuilder().build();
+        const sheet = mockBooleanSheet();
         const formulaCell = {
           formula: {
             not: {reference: 'D1'},
@@ -295,7 +295,7 @@ describe('Sheet', () => {
     });
     describe('AND', () => {
       it('should resolve a AND formula with direct references', () => {
-        const sheet = mockBooleanSheetBuilder().build();
+        const sheet = mockBooleanSheet();
         const formulaCell1 = {
           formula: {
             and: [
@@ -326,7 +326,7 @@ describe('Sheet', () => {
         expect(resultCell2).toEqual({value: {boolean: true}});
       });
       it('should resolve a AND formula with deep references', () => {
-        const sheet = mockBooleanSheetBuilder().build();
+        const sheet = mockBooleanSheet();
         const formulaCell = {
           formula: {
             and: [
@@ -346,7 +346,7 @@ describe('Sheet', () => {
     });
     describe('OR', () => {
       it('should resolve a OR formula with direct references', () => {
-        const sheet = mockBooleanSheetBuilder().build();
+        const sheet = mockBooleanSheet();
         const formulaCell1 = {
           formula: {
             or: [
@@ -377,7 +377,7 @@ describe('Sheet', () => {
         expect(resultCell2).toEqual({value: {boolean: false}});
       });
       it('should resolve a OR formula with deep references', () => {
-        const sheet = mockBooleanSheetBuilder().build();
+        const sheet = mockBooleanSheet();
         const formulaCell = {
           formula: {
             or: [
@@ -398,7 +398,7 @@ describe('Sheet', () => {
 
     describe('CONCAT', () => {
       it('should resolve a CONCAT formula with direct references', () => {
-        const sheet = mockStringSheetBuilder().build();
+        const sheet = mockStringSheet();
         const formulaCell1 = {
           formula: {
             concat: [
@@ -429,7 +429,7 @@ describe('Sheet', () => {
         expect(resultCell2).toEqual({value: {text: 'BBBB'}});
       });
       it('should resolve a CONCAT formula with deep references', () => {
-        const sheet = mockStringSheetBuilder().build();
+        const sheet = mockStringSheet();
         const formulaCell = {
           formula: {
             concat: [
@@ -448,7 +448,7 @@ describe('Sheet', () => {
     });
     describe('IF', () => {
       it('should resolve an IF formula', () => {
-        const sheet = mockSumSheetBuilder().build();
+        const sheet = mockSumSheet();
         const formulaCell = {
           formula: {
             if: [

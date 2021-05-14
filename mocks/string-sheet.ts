@@ -1,73 +1,68 @@
-import {Sheet} from '../interfaces';
-
-export const mockStringSheetBuilder = () => ({
-  build: () =>
-    [
-      [
-        {
-          value: {
-            text: 'AA',
+export const mockStringSheet = () => [
+  [
+    {
+      value: {
+        text: 'AA',
+      },
+    },
+    {
+      value: {
+        text: 'BB',
+      },
+    },
+    {
+      value: {
+        text: 'CC',
+      },
+    },
+  ],
+  [
+    {
+      value: {
+        text: 'AAA',
+      },
+    },
+    {
+      value: {
+        text: 'BBB',
+      },
+    },
+    {
+      value: {
+        text: 'CCC',
+      },
+    },
+  ],
+  [
+    {
+      formula: {
+        concat: [
+          {
+            reference: 'A1',
           },
-        },
-        {
-          value: {
-            text: 'BB',
+          {
+            reference: 'B1',
           },
-        },
-        {
-          value: {
-            text: 'CC',
+          {
+            reference: 'B2',
           },
-        },
-      ],
-      [
-        {
-          value: {
-            text: 'AAA',
+        ],
+      },
+    },
+    {
+      formula: {
+        concat: [
+          {
+            reference: 'A1',
           },
-        },
-        {
-          value: {
-            text: 'BBB',
+          {
+            reference: 'B1',
           },
-        },
-        {
-          value: {
-            text: 'CCC',
+          {
+            reference: 'B2',
           },
-        },
-      ],
-      [
-        {
-          formula: {
-            concat: [
-              {
-                reference: 'A1',
-              },
-              {
-                reference: 'B1',
-              },
-              {
-                reference: 'B2',
-              },
-            ],
-          },
-        },
-        {
-          formula: {
-            concat: [
-              {
-                reference: 'A1',
-              },
-              {
-                reference: 'B1',
-              },
-              {
-                reference: 'B2',
-              },
-            ],
-          },
-        },
-      ],
-    ] as Sheet,
-});
+        ],
+      },
+    },
+  ],
+];
