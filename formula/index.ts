@@ -14,7 +14,6 @@ export function resolveFormula(
   sheet: Sheet,
   acc = {} as ValueCell | ErrorCell
 ): ValueCell | ErrorCell {
-  // console.log('formula: ', formula);
   if ('reference' in formula) {
     // resolve ReferenceCell
     const resultCell = getCellAtPosition(formula.reference, sheet);
@@ -91,6 +90,9 @@ export function resolveFormula(
 }
 
 function calculateSum(cells: ReferenceCell[], sheet: Sheet) {
+  if (cells.length <= 0) {
+    return {error: 'Values for number operation are missing'};
+  }
   let result = 0;
   cells.forEach((cell) => {
     const cellValue = getValueCellAtPosition(cell.reference, sheet)?.value
@@ -103,6 +105,9 @@ function calculateSum(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateMultiply(cells: ReferenceCell[], sheet: Sheet) {
+  if (cells.length <= 0) {
+    return {error: 'Values for number operation are missing'};
+  }
   let result = 1;
   cells.forEach((cell) => {
     const cellValue = getValueCellAtPosition(cell.reference, sheet)?.value
@@ -115,6 +120,9 @@ function calculateMultiply(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateDivide(cells: ReferenceCell[], sheet: Sheet) {
+  if (cells.length <= 0) {
+    return {error: 'Values for number operation are missing'};
+  }
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
   let result = firstCell.value.number as number;
   const slicedCells = cells.slice(1);
@@ -129,7 +137,9 @@ function calculateDivide(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateIsGreater(cells: ReferenceCell[], sheet: Sheet) {
-  //return errors if length = 0
+  if (cells.length <= 0) {
+    return {error: 'Values for number operation are missing'};
+  }
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
   const secondCell = getValueCellAtPosition(cells[1].reference, sheet);
 
@@ -141,7 +151,12 @@ function calculateIsGreater(cells: ReferenceCell[], sheet: Sheet) {
 }
 
 function calculateIsEqual(cells: ReferenceCell[], sheet: Sheet) {
-  //return errors if length = 0
+  if (cells.length <= 0) {
+    return {error: 'Values for number operation are missing'};
+  }
+  if (cells.length <= 0) {
+    return {error: 'Values for number operation are missing'};
+  }
   const firstCell = getValueCellAtPosition(cells[0].reference, sheet);
   const secondCell = getValueCellAtPosition(cells[1].reference, sheet);
 
@@ -204,11 +219,6 @@ function calculateIf(args: any[], sheet: Sheet) {
   const condition = args[0] as Formula | boolean;
   const firstValueCell = args[1];
   const secondValueCell = args[2];
-  // console.log('args:', JSON.stringify(args, null, 4));
-  // console.log('condition:', JSON.stringify(condition, null, 4));
-  // console.log('firstValueCell:', JSON.stringify(firstValueCell, null, 4));
-  // console.log('secondValueCell:', JSON.stringify(secondValueCell, null, 4));
-
   let conditionValue = null;
 
   if (typeof condition === 'boolean') {

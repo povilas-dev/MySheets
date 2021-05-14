@@ -21,10 +21,7 @@ export function getValueCellAtPosition(
 ): ValueCell {
   const position = parseCellPosition(cellPosition);
   const cell = sheet[position.column][position.row];
-  // console.log('POSITION: ', position);
-  // console.log('CELL at ', cellPosition, ' : ', cell);
   if ('formula' in cell) {
-    // console.log('REFERENCE: ,', JSON.stringify(cell, null, 4));
     const resultCell = resolveFormula(cell.formula as Formula, sheet);
     updateCellAtPosition(cellPosition, resultCell, sheet);
     return resultCell as ValueCell;
@@ -53,18 +50,11 @@ export function findFormulas(
   sheet: Sheet
 ): {formulaCell: FormulaCell; cellPosition: {row: number; column: number}}[] {
   const rowCount = sheet.length;
-  // let formulaCells = [] as Cell[];
   let formulas: {
     formulaCell: FormulaCell;
     cellPosition: {row: number; column: number};
   }[] = [];
-  // console.log(sheet[0]);
-  // console.log('rowCount: ', rowCount);
   for (let i = 0; i < rowCount; i++) {
-    // formulaCells = [
-    //   ...formulaCells,
-    //   ...sheet[i].filter((cell: Cell) => cell.formula !== undefined),
-    // ];
     sheet[i].forEach((cell: Cell, index: number) => {
       if (cell.formula !== undefined) {
         formulas.push({
