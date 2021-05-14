@@ -11,7 +11,7 @@ export enum Operator {
   CONCAT = 'concat',
 }
 
-const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+export const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 export const ColumnPosition = Object.fromEntries(
   alphabet.map((key, index) => [key, index])
 );

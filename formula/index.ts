@@ -82,7 +82,7 @@ export function resolveFormula(
     }
     if (Operator.CONCAT in formula) {
       if (formula.concat !== undefined) {
-        acc = calculateConcat(formula.concat as ReferenceCell[], sheet);
+        acc = calculateConcat(formula.concat as Cell[], sheet);
         return acc;
       }
     }
@@ -172,10 +172,12 @@ function calculateOr(cells: ReferenceCell[], sheet: Sheet) {
   return {value: {boolean: result}} as ValueCell;
 }
 
-function calculateConcat(cells: ReferenceCell[], sheet: Sheet) {
-  const cellStrings = cells.map(
-    (cell) => getValueCellAtPosition(cell.reference, sheet)?.value?.text
-  );
+function calculateConcat(cells: Cell[], sheet: Sheet) {
+  const cellStrings = cells.map((cell) => {
+    if ('reference' in cell)
+      return getValueCellAtPosition(cell.reference, sheet)?.value?.text;
+    if ('value' in cell) return cell.value?.text;
+  });
   const result = cellStrings.join('');
   return {value: {text: result}} as ValueCell;
 }

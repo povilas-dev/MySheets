@@ -1,7 +1,7 @@
 import {ColumnPosition} from '../enums';
-import {Cell} from '../interfaces';
 
 export function parseCellPosition(cellPosition: string) {
+  console.log(cellPosition);
   const positionStrSplit = cellPosition.split('');
   const parsedPosition = {
     row: ColumnPosition[positionStrSplit[0]] as number,

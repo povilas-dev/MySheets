@@ -41,16 +41,30 @@ export function evaluateSheet(providedJob: Job) {
   return resultSheet;
 }
 
-export function findFormulas(sheet: Sheet) {
+export function findFormulas(
+  sheet: Sheet
+): {formulaCell: FormulaCell; cellPosition: {row: number; column: number}}[] {
   const rowCount = sheet.length;
-  let formulaCells = [] as Cell[];
+  // let formulaCells = [] as Cell[];
+  let formulas: {
+    formulaCell: FormulaCell;
+    cellPosition: {row: number; column: number};
+  }[] = [];
   // console.log(sheet[0]);
   // console.log('rowCount: ', rowCount);
   for (let i = 0; i < rowCount; i++) {
-    formulaCells = [
-      ...formulaCells,
-      ...sheet[i].filter((cell: Cell) => cell.formula !== undefined),
-    ];
+    // formulaCells = [
+    //   ...formulaCells,
+    //   ...sheet[i].filter((cell: Cell) => cell.formula !== undefined),
+    // ];
+    sheet[i].forEach((cell: Cell, index: number) => {
+      if (cell.formula !== undefined) {
+        formulas.push({
+          formulaCell: cell,
+          cellPosition: {row: i, column: index},
+        });
+      }
+    });
   }
-  return formulaCells as FormulaCell[];
+  return formulas;
 }
